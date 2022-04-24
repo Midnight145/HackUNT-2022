@@ -17,11 +17,17 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.listen()
     print("Listening on port " + str(PORT))
     print("Waiting for connections")
-
     while True:
-        conn, addr = s.accept()
+        try:
+            conn, addr = s.accept()
+        except KeyboardInterrupt:
+            print("\nShutting down server...")
+            for client in clients:
+                client.close()
+            s.close()
+            print("Server shut down.")
+            exit(0)
         threading.Thread(target=connection.new_client, args=(conn, addr), daemon=True).start()
-        print(type(addr))
 
         print("Connected to: ", addr)
         conn.send(b"Hello, client!")

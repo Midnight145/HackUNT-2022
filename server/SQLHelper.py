@@ -224,3 +224,15 @@ def get_seats(movie_id: int) -> list[sqlite3.Row]:
     with mutex:
         resp = db.execute("SELECT * FROM seats WHERE movie_id = ?", (movie_id,))
     return resp.fetchall()
+
+
+def get_reservation(uuid: str, movie_id: int) -> sqlite3.Row:
+    """
+    Returns the reservation for the given user and movie, eventually gets sent to the client
+    :param uuid:
+    :param movie_id:
+    :return: the reservation for the given user and movie
+    """
+    with mutex:
+        resp = db.execute("SELECT * FROM movie_reservations WHERE uuid = ? AND movie_id = ?", (uuid, movie_id))
+    return resp.fetchone()

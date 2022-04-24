@@ -10,7 +10,7 @@ if TYPE_CHECKING:  # avoid circular import, always false
 
 def reserve(client: 'Client', data: list[Union[str, int]]) -> str:
     if len(data) < 7:
-        return "Invalid Parameters"
+        return "failiure::Invalid Parameters"
     uuid_ = data[0]
     date = data[2]
     time = data[3]
@@ -23,23 +23,27 @@ def reserve(client: 'Client', data: list[Union[str, int]]) -> str:
     user = SQLHelper.get_user_by_uuid(client.uuid)
     movie = SQLHelper.get_movie_by_id(movie_id)
     reserved_seats = SQLHelper.get_reserved_seats(movie_id)
-    reserved_seat_numbers = [i["seat_number"] for i in reserved_seats]
+
+    reserved_seat_numbers = [str(i["seat_number"]) for i in reserved_seats]
+    print("reserved", reserved_seat_numbers)
+    print("seats", seats)
 
     if movie is None:  # movie does not exist
-        return f"Movie with id {movie_id} not found"
+        return f"failure::Movie with id {movie_id} not found"
 
     if any(i in reserved_seat_numbers for i in seats):  # seat is reserved
-        return "Seat already reserved"
+        return "failure::Seat already reserved"
 
     # check rating
-    if movie["rating"] == "R" or movie["rating"] == "NC-17" and user["age"] < 18:
-        return "You are too young to reserve this movie"
+    rating = movie["rating"].lower()
+    if movie["rating"] == "r" or movie["rating"] == "nc-17" and user["age"] < 18:
+        return "failure::You are too young to reserve this movie"
 
     if len(seats) != len(set(seats)):  # duplicate seats
-        return "Duplicate seats"
+        return "failure::Duplicate seats"
 
     if any(int(i) > 99 or int(i) < 0 for i in seats):  # seat number is out of range
-        return "Invalid seat number"
+        return "failure::Invalid seat number"
 
     SQLHelper.reserve_seats(uuid_, movie_id, data[6:])  # reserve seats
 
@@ -49,8 +53,9 @@ def reserve(client: 'Client', data: list[Union[str, int]]) -> str:
         reserved_seats))  # update movie availability-- subtract reserved seats from total seats
 
     SQLHelper.add_reservation(uuid_, movie_id, date, time, theater)  # add reservation
+    reservation_id = SQLHelper.get_reservation(uuid_, movie_id)["id"]  # get reservation to get id
 
-    return "Reserved"
+    return f"success::{reservation_id}"
 
 
 def create(client: socket, data: list[Union[str, int]]) -> str:

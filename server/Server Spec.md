@@ -52,15 +52,42 @@ reservation_id::date::time::theater::movie_id::seats1::seats2::...
 movie_id::title::rating::time::date::theater::seats_available::capacity
 movie_id::title::rating::time::date::theater::seats_available::capacity
 ```
-- ### get_seats
-  - Returns the reserved status of all seats in a movie, where 1 is reserved and 0 is available
-  - Parameters: movie_id
-  - Example: `uuid::get_seats::1`
-  - Response: `seat1_status::seat2_status::...`
+  - Response: `failure::reason`
 
-- ### create_movie
-  - Creates a new movie entry and adds it to the database
-  - Parameters: title, rating, date, time, theater, seats_available, capacity
-  - Example: `uuid::create_movie::"Shrek"::"PG"::20220424::1030::1::100::100`
-  - Response: `success::movie_id`
+  - ### get_seats
+    - Returns the reserved status of all seats in a movie, where 1 is reserved and 0 is available
+    - Parameters: movie_id
+    - Example: `uuid::get_seats::1`
+    - Response: `seat1_status::seat2_status::...`
+
+  - ### create_movie
+    - Creates a new movie entry and adds it to the database
+    - Parameters: title, rating, date, time, theater, seats_available, capacity
+    - Example: `uuid::create_movie::"Shrek"::"PG"::20220424::1030::1::100::100`
+    - Response: `success::movie_id`
+    - Response: `failure::reason`
+
+  - ### get_times
+    - Returns the times of all movies of a given name, on a given date
+    - Parameters: movie_id, date
+    - Example: `uuid::get_times::1::20220424`
+    - Response: `time1::time2::...`
+    - Response: `failure::reason`
+
+  - ### get_dates
+    - Returns the dates of all movies of a given name
+    - Parameters: movie_id
+    - Example: `uuid::get_dates::1`
+    - Response: `date1::date2::...`
+    - Response: `failure::reason`
+
+  - ### get_theaters
+    - Returns `\n`-delimited list about all theaters in the database
+    - Parameters: 
+    - Example: `uuid::get_theaters`
+    - Response: 
+```
+theater::id::name::capacity
+theater::id::name::capacity
+```
   - Response: `failure::reason`

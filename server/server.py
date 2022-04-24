@@ -7,7 +7,7 @@ import commands
 import connection
 from structs import *
 
-PORT = 31337
+PORT = 31338
 HOST = "127.0.0.1"
 DB_FILE = "server.db"
 

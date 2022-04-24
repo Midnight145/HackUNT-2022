@@ -1,3 +1,5 @@
+import sqlite3
+from socket import socket
 from typing import Union, TYPE_CHECKING
 import shlex
 import commands
@@ -7,33 +9,34 @@ if TYPE_CHECKING:
 
 
 class Client:
-    def __init__(self, connection, address):
+    # noinspection PyTypeChecker
+    def __init__(self, connection: socket, address: tuple) -> None:
         self.connection = connection
         self.address = address
-        self.uuid = None
-        self.active = True
-        self.user = None
+        self.uuid: str = None
+        self.active: bool = True
+        self.user: sqlite3.Row = None
 
-    def listen(self):
+    def listen(self) -> None:
         while self.active:
-            data = self.connection.recv(1024)
+            data: bytes = self.connection.recv(1024)
             if not data:
                 self.connection.close()
 
             print(data.decode("utf-8"))
-            parsed = parse_data(self, data)
-            if parsed is not None:
-                self.connection.send(str(parsed).encode("utf-8"))
+            resp: str = parse_data(self, data)
+            if resp is not None:
+                self.connection.send(str(resp).encode("utf-8"))
             else:
                 self.connection.send(b"ERROR")
 
 
-def new_client(conn, addr):
+def new_client(conn: socket, addr: tuple) -> None:
     client = Client(conn, addr)
     client.listen()
 
 
-def parse_data(client, data) -> Union['MovieReservation', 'SeatReservation', str, None]:
+def parse_data(client: Client, data: bytes) -> str:
     if client.uuid is None:
         client.uuid = data.split()[0].decode("utf-8")
     data = data.decode("utf-8")
@@ -42,6 +45,8 @@ def parse_data(client, data) -> Union['MovieReservation', 'SeatReservation', str
         return "Invalid Command"
 
     # data[0] will always be uuid after login
+    # data[1] will always be the command
+
     if data[1] == "reserve":
         return commands.reserve(client, data)
 
@@ -51,11 +56,10 @@ def parse_data(client, data) -> Union['MovieReservation', 'SeatReservation', str
     elif data[1] == "create":
         return commands.create(client, data)
 
-    elif data[1] == "get_movies":
-        return commands.get_movies(client, data)
+    elif data[1] == "get_unique_movies":
+        return commands.get_unique_movies(client, data)
 
     elif data[1] == "get_reservations":
         return commands.get_reservations(client, data)
-
 
     return "Invalid Command"

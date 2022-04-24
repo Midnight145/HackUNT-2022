@@ -24,6 +24,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     while True:
         conn, addr = s.accept()
         threading.Thread(target=connection.new_client, args=(conn, addr), daemon=True).start()
+        print(type(addr))
 
         print("Connected to: ", addr)
         conn.send(b"Hello, client!")

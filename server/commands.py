@@ -1,4 +1,6 @@
 import uuid
+from socket import socket
+from typing import Union
 
 import SQLHelper
 import auth
@@ -16,7 +18,7 @@ import auth
 #     return "Logged in: " + data[0]
 
 
-def reserve(client, data):
+def reserve(client: socket, data: list[Union[str, int]]) -> str:
     if len(data) < 7:
         return "Invalid Parameters"
     uuid_ = data[0]
@@ -58,7 +60,7 @@ def reserve(client, data):
     return "Reserved"
 
 
-def create(client, data):
+def create(client: socket, data: list[Union[str, int]]) -> str:
     uuid = data[0]
     if not SQLHelper.is_admin(uuid):
         return "Permission denied"
@@ -82,19 +84,30 @@ def create(client, data):
     return "Table created"
 
 
-def execute(client, data):
+def execute(client: socket, data: list[Union[str, int]]) -> str:
     if len(data) < 2:
         return "Invalid Parameters"
     uuid = data[0]
     command = data[1]
     if not SQLHelper.is_admin(uuid):
         return "Permission denied"
-    SQLHelper.execute(''.join(data[2:]))
+    SQLHelper.execute(' '.join(data[2:]))
 
     return "Executed"
 
 
-def get_movies(client, data):
+def get_unique_movies(client: socket, data: list[Union[str, int]]) -> str:
+    if len(data) < 3:
+        return "Invalid Parameters"
+    uuid = data[0]
+    command = data[1]
+    title = data[2]
+
+    movies = SQLHelper.get_unique_movies(title)
+    return '::'.join(movies)
+
+
+def get_movies(client: socket, data: list[Union[str, int]]) -> str:
     def movie_to_str(__movie):
         return f"{__movie['id']}::{__movie['title']}::{__movie['rating']}::{__movie['showtime']}::{__movie['showdate']}::{__movie['theater']}::{__movie['seats']}::{__movie['available']}::{__movie['capacity']}"
     movies = SQLHelper.get_movies()
@@ -104,7 +117,7 @@ def get_movies(client, data):
     return retval
 
 
-def get_reservations(client, data: list):
+def get_reservations(client: socket, data: list[Union[str, int]]) -> str:
     def reservation_to_str(__reservation):
         return f"{__reservation['id']}::{__reservation['movie_id']}::{__reservation['date']}::{__reservation['time']}::{__reservation['theater']}::{__reservation['seats']}"
 

@@ -41,7 +41,6 @@ def create_user(name: str, age: int) -> str:
     return uuid_
 
 
-# todo: fix insert into syntax
 def add_theater(capacity: int, available: int, theater_name: str, seats: str) -> None:
     """
     Adds a theater to the database
@@ -52,7 +51,7 @@ def add_theater(capacity: int, available: int, theater_name: str, seats: str) ->
     :return: None
     """
     with mutex:
-        db.execute("INSERT INTO theaters VALUES (?, ?, ?, ?)", (capacity, available, theater_name, seats))
+        db.execute("INSERT INTO theaters (capacity, available, theater_name, seats) VALUES (?, ?, ?, ?)", (capacity, available, theater_name, seats))
         connection.commit()
 
 

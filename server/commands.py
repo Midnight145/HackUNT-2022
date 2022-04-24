@@ -4,9 +4,6 @@ from typing import Union
 import SQLHelper
 
 
-# default seats
-# ''.join([chr(i) for i in range(100)])
-
 def reserve(client: socket, data: list[Union[str, int]]) -> str:
     if len(data) < 7:
         return "Invalid Parameters"

@@ -1,4 +1,3 @@
-import shlex
 import sqlite3
 from socket import socket
 
@@ -52,7 +51,7 @@ def parse_data(client: Client, data: bytes) -> str:
     if client.uuid is None:
         client.uuid = data.split()[0].decode("utf-8")
     data = data.decode("utf-8")
-    data = shlex.split(data)
+    data = data.split("::")
     if len(data) < 2:
         return Errors.INVALID_COMMAND
 

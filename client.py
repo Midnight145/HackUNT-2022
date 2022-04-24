@@ -1,4 +1,3 @@
-import shlex
 import socket
 import sys
 import uuid
@@ -10,7 +9,7 @@ with open("uuid.dat", "r") as f:
 
 
 def parse_command(x):
-    return shlex.split(x)
+    return x.split("::")
 
 
 PORT = 31337

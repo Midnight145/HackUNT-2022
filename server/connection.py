@@ -3,6 +3,7 @@ import sqlite3
 from socket import socket
 
 import commands
+from consts import Errors
 
 
 class Client:
@@ -27,7 +28,7 @@ class Client:
                     resp = resp[:-1]
                 self.connection.send(str(resp).encode("utf-8"))
             else:
-                self.connection.send(b"ERROR")
+                self.connection.send(b"failure::no response")
 
 
 def new_client(conn: socket, addr: tuple) -> None:
@@ -53,19 +54,16 @@ def parse_data(client: Client, data: bytes) -> str:
     data = data.decode("utf-8")
     data = shlex.split(data)
     if len(data) == 1:
-        return "Invalid Command"
+        return Errors.INVALID_COMMAND
 
     # data[0] will always be uuid after login
     # data[1] will always be the command
 
-    if data[1] == "reserve":
+    if data[1] == "register":
+        return commands.register(client, data)
+
+    elif data[1] == "reserve":
         return commands.reserve(client, data)
-
-    elif data[1] == "view":
-        pass
-
-    elif data[1] == "create":
-        return commands.create(client, data)
 
     elif data[1] == "get_unique_movies":
         return commands.get_unique_movies(client, data)
@@ -73,10 +71,13 @@ def parse_data(client: Client, data: bytes) -> str:
     elif data[1] == "get_reservations":
         return commands.get_reservations(client, data)
 
-    elif data[1] == "get_seats":
-        return commands.get_seats(client, data)
-
     elif data[1] == "get_movies":
         return commands.get_movies(client, data)
 
-    return "Invalid Command"
+    elif data[1] == "get_seats":
+        return commands.get_seats(client, data)
+
+    elif data[1] == "create_movie":
+        return commands.create_movie(client, data)
+
+    return Errors.INVALID_COMMAND

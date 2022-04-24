@@ -1,16 +1,15 @@
 from socket import socket
 from typing import Union, TYPE_CHECKING
 import SQLHelper
+from consts import Errors
 
 if TYPE_CHECKING:  # avoid circular import, always false
     from connection import Client
 
 
-# todo: update responses to match new spec
-
 def reserve(client: 'Client', data: list[Union[str, int]]) -> str:
     if len(data) < 7:
-        return "failiure::Invalid Parameters"
+        return Errors.INVALID_PARAMS
     uuid_ = data[0]
     date = data[2]
     time = data[3]
@@ -25,25 +24,23 @@ def reserve(client: 'Client', data: list[Union[str, int]]) -> str:
     reserved_seats = SQLHelper.get_reserved_seats(movie_id)
 
     reserved_seat_numbers = [str(i["seat_number"]) for i in reserved_seats]
-    print("reserved", reserved_seat_numbers)
-    print("seats", seats)
 
     if movie is None:  # movie does not exist
-        return f"failure::Movie with id {movie_id} not found"
+        return Errors.NOT_FOUND
 
     if any(i in reserved_seat_numbers for i in seats):  # seat is reserved
-        return "failure::Seat already reserved"
+        return Errors.SEATS_TAKEN
 
     # check rating
     rating = movie["rating"].lower()
-    if movie["rating"] == "r" or movie["rating"] == "nc-17" and user["age"] < 18:
-        return "failure::You are too young to reserve this movie"
+    if rating == "r" or rating == "nc-17" and user["age"] < 18:
+        return Errors.PERMISSION_DENIED
 
     if len(seats) != len(set(seats)):  # duplicate seats
-        return "failure::Duplicate seats"
+        return Errors.DUP_SEATS
 
     if any(int(i) > 99 or int(i) < 0 for i in seats):  # seat number is out of range
-        return "failure::Invalid seat number"
+        return Errors.INVALID_SEATS
 
     SQLHelper.reserve_seats(uuid_, movie_id, data[6:])  # reserve seats
 
@@ -58,54 +55,73 @@ def reserve(client: 'Client', data: list[Union[str, int]]) -> str:
     return f"success::{reservation_id}"
 
 
-def create(client: socket, data: list[Union[str, int]]) -> str:
+def create_movie(client: 'Client', data: list[Union[str, int]]) -> str:
     uuid = data[0]
+    command = data[1]
+    title = data[2]
+    rating = data[3]
+    date = data[4]
+    time = data[5]
+    theater = data[6]
+    seats_available = data[7]
+    capacity = data[8]
     if not SQLHelper.is_admin(uuid):
-        return "Permission denied"
+        return Errors.PERMISSION_DENIED
+    movie_id = SQLHelper.add_movie(title, rating, date, time, theater, seats_available, capacity)
 
-    tablename = data[2]
-    columns = data[3:]
-
-    if tablename == "users":
-        SQLHelper.add_user(columns[0], columns[1], columns[2])
-
-    if tablename == "movies":
-        SQLHelper.add_movie(columns[0], columns[1], columns[2], columns[3], columns[4])
-
-    if tablename == "theaters":
-        SQLHelper.add_theater(columns[0], columns[1], columns[2], columns[3])
-
-    return "Table created"
+    return f"success::{movie_id}"
 
 
 # RESPONSES SENT TO CLIENT
 
-def get_movies_by_title(client: socket, data: list[Union[str, int]]) -> str:
+def register(client: 'Client', data: list[Union[str, int]]) -> str:
+    if len(data) != 3:
+        return Errors.INVALID_PARAMS
+    command = data[0]
+    name = data[1]
+    age = data[2]
+
+    if not age.isdigit():
+        return Errors.INVALID_PARAMS
+    
+    new_uuid = SQLHelper.create_user(name, age)
+    return f"success::{new_uuid}"
+
+
+def get_movies_by_title(client: 'Client', data: list[Union[str, int]]) -> str:
+
+    def movie_to_str(__movie):  # helper function to convert movie to string
+        return (
+            f"{__movie['id']}::{__movie['title']}::{__movie['rating']}::{__movie['showdate']}::{__movie['showtime']}"
+            f"::{__movie['theater']}::{__movie['available']}::{__movie['capacity']}")
+
     if len(data) != 3:  # data[0] is uuid, data[1] is command, data[2] is title
-        return "Invalid Parameters"
+        return Errors.INVALID_PARAMS
     title = data[2]  # title of movie
 
     movies = SQLHelper.get_movies_by_title(title)
-    # todo: change what this returns
-    movies = [i["title"] for i in movies]  # get titles
-    return '::'.join(movies)
+    retval = ""
+    for movie in movies:
+        retval += movie_to_str(movie) + "\n"
+
+    return retval
 
 
-def get_unique_movies(client: socket, data: list[Union[str, int]]) -> str:
+def get_unique_movies(client: 'Client', data: list[Union[str, int]]) -> str:
     if len(data) != 2:  # data[0] is uuid, data[1] is command-- no params
-        return "Invalid Parameters"
+        return Errors.INVALID_PARAMS
 
     movies = list(SQLHelper.get_unique_movies())  # get all movies
     return '::'.join(movies)  # format for sending to client-- title1::title2::title3
 
 
-def get_movies(client: socket, data: list[Union[str, int]]) -> str:
+def get_movies(client: 'Client', data: list[Union[str, int]]) -> str:
     if len(data) > 2:  # data[0] is uuid, data[1] is command-- no params
-        return "Invalid Parameters"
+        return Errors.INVALID_PARAMS
 
     def movie_to_str(__movie):  # helper function to convert movie to string
         return (
-            f"{__movie['id']}::{__movie['title']}::{__movie['rating']}::{__movie['showtime']}::{__movie['showdate']}"
+            f"{__movie['id']}::{__movie['title']}::{__movie['rating']}::{__movie['showdate']}::{__movie['showtime']}"
             f"::{__movie['theater']}::{__movie['available']}::{__movie['capacity']}")
 
     movies = SQLHelper.get_movies()  # get all movies
@@ -115,9 +131,9 @@ def get_movies(client: socket, data: list[Union[str, int]]) -> str:
     return retval
 
 
-def get_reservations(client: socket, data: list[Union[str, int]]) -> str:
+def get_reservations(client: 'Client', data: list[Union[str, int]]) -> str:
     if len(data) > 2:  # data[0] is uuid, data[1] is command-- no params
-        return "Invalid Parameters"
+        return Errors.INVALID_PARAMS
 
     def reservation_to_str(__reservation, seats):  # helper function to convert reservation to string
         return (
@@ -144,14 +160,15 @@ def get_reservations(client: socket, data: list[Union[str, int]]) -> str:
     return retval
 
 
-def get_times(client: socket, data: list[Union[str, int]]) -> str:
+#  todo: get times
+def get_times(client: 'Client', data: list[Union[str, int]]) -> str:
     if len(data) != 3:  # data[0] is uuid, data[1] is command, data[2] is title
-        return "Invalid Parameters"
+        return Errors.INVALID_PARAMS
 
 
-def get_seats(client: socket, data: list[Union[str, int]]) -> str:
+def get_seats(client: 'Client', data: list[Union[str, int]]) -> str:
     if len(data) != 3:  # data[0] is uuid, data[1] is command, data[2] is movie_id
-        return "Invalid Parameters"
+        return Errors.INVALID_PARAMS
 
     seats = SQLHelper.get_seats(data[2])  # get all seats for movie
     retval = ""  # return value

@@ -40,7 +40,9 @@ def add_theater(capacity, available, theater_name, seats):
 
 def add_movie(title, rating, showtime, showdate, theater, seats):
     with mutex:
-        db.execute("INSERT INTO movies VALUES (?, ?, ?, ?, ?, ?)", (title, rating, showtime, showdate, theater, seats))
+        # ugly constant is empty seats
+
+        db.execute("INSERT INTO movies VALUES (?, ?, ?, ?, ?, ?)", (title, rating, showtime, showdate, theater, str(chr(0)) * 100))
         connection.commit()
 
 
@@ -104,3 +106,15 @@ def update_movie_availability(movie_id, available):
     with mutex:
         db.execute("UPDATE movies SET available = ? WHERE id = ?", (available, movie_id))
         connection.commit()
+
+
+def get_movies():
+    with mutex:
+        resp = db.execute("SELECT * FROM movies")
+    return resp.fetchall()
+
+
+def get_reservations(uuid):
+    with mutex:
+        resp = db.execute("SELECT * FROM movie_reservations WHERE uuid = ?", (uuid,))
+    return resp.fetchall()

@@ -48,8 +48,14 @@ def parse_data(client, data) -> Union['MovieReservation', 'SeatReservation', str
     elif data[1] == "view":
         pass
 
-    elif data[1] == "connect":
-        return commands.connect(client, data)
+    elif data[1] == "create":
+        return commands.create(client, data)
+
+    elif data[1] == "get_movies":
+        return commands.get_movies(client, data)
+
+    elif data[1] == "get_reservations":
+        return commands.get_reservations(client, data)
 
 
     return "Invalid Command"

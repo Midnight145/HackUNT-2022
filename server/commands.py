@@ -92,3 +92,24 @@ def execute(client, data):
     SQLHelper.execute(''.join(data[2:]))
 
     return "Executed"
+
+
+def get_movies(client, data):
+    def movie_to_str(__movie):
+        return f"{__movie['id']}::{__movie['title']}::{__movie['rating']}::{__movie['showtime']}::{__movie['showdate']}::{__movie['theater']}::{__movie['seats']}::{__movie['available']}::{__movie['capacity']}"
+    movies = SQLHelper.get_movies()
+    retval = ""
+    for movie in movies:
+        retval += movie_to_str(movie) + "\n"
+    return retval
+
+
+def get_reservations(client, data: list):
+    def reservation_to_str(__reservation):
+        return f"{__reservation['id']}::{__reservation['movie_id']}::{__reservation['date']}::{__reservation['time']}::{__reservation['theater']}::{__reservation['seats']}"
+
+    reservations = SQLHelper.get_reservations(data[0])
+    retval = ""
+    for reservation in reservations:
+        retval += reservation_to_str(reservation) + "\n"
+    return retval

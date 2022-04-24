@@ -100,8 +100,8 @@ def parse_data(client: Client, data: bytes) -> str:
     elif data[1] == "get_theaters":
         return commands.get_theaters(client, data)
 
-    elif data[1] == "create_movie":
-        return commands.create_movie(client, data)
+    elif data[1] == "create":
+        return commands.create(client, data)
 
 
     return Errors.INVALID_COMMAND

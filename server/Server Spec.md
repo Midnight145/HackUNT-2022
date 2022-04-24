@@ -21,10 +21,10 @@
 
 - ### reserve
   - Creates a movie reservation and adds it to the database
-  - Parameters: date, time, theater, movie_id, seats+
+  - Parameters: movie_id, seats+
     - Seats are added at the end of the command, each being its own parameter
-    - The command will be passed to the server as `uuid::reserve::date::time::theater::movie_id::seats1::seats2::...`
-  - Example: `uuid::reserve::20220424::1030::1::1::1::2::3`
+    - The command will be passed to the server as `uuid::reserve::movie_id::seats1::seats2::...`
+  - Example: `uuid::reserve:::1::1::2::3`
   - Response: `success::reservation_id`
   - Response: `failure::reason`
 

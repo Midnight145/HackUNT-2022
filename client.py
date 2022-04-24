@@ -11,7 +11,7 @@ def parse_command(x):
 
 
 PORT = 31337
-HOST = "127.0.0.1"
+HOST = "localhost"
 register = False
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
     sock.connect((HOST, PORT))

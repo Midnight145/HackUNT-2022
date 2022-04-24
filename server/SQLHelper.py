@@ -69,7 +69,7 @@ def get_user_by_name(username: str) -> sqlite3.Row:
 
 def add_reservation(uuid_: str, movie_id: int, date: int, time: int, theater: str, seats: str) -> None:
     with mutex:
-        db.execute("INSERT INTO movie_reservations VALUES (?, ?, ?, ?, ?, ?, ?)", (uuid_, movie_id, date, time, theater, seats))
+        db.execute("INSERT INTO movie_reservations VALUES (?, ?, ?, ?, ?, ?)", (uuid_, movie_id, date, time, theater, seats))
         connection.commit()
 
 
@@ -116,6 +116,12 @@ def get_unique_movies() -> set[str]:
     for row in resp.fetchall():
         titles.append(row["title"])
     return set(titles)
+
+
+def get_movies() -> list[sqlite3.Row]:
+    with mutex:
+        resp = db.execute("SELECT * FROM movies")
+    return resp.fetchall()
 
 
 def get_movies_by_title(title: str) -> list[sqlite3.Row]:

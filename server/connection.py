@@ -1,11 +1,8 @@
+import shlex
 import sqlite3
 from socket import socket
-from typing import Union, TYPE_CHECKING
-import shlex
-import commands
 
-if TYPE_CHECKING:
-    from server.structs import MovieReservation, SeatReservation
+import commands
 
 
 class Client:

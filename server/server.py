@@ -1,11 +1,8 @@
 import socket
 import threading
-from typing import Union
 
 import SQLHelper
-import commands
 import connection
-from structs import *
 
 PORT = 31338
 HOST = "127.0.0.1"

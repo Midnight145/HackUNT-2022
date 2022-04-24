@@ -1,10 +1,9 @@
-import socket
-import hashlib
-import os
-import sys
-import json
 import shlex
+import socket
+import sys
 import uuid
+
+# TODO: delimiter ::
 
 with open("uuid.dat", "w+") as f:
     uuid_ = f.read()

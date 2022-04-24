@@ -1,32 +1,20 @@
-import uuid
 from socket import socket
 from typing import Union
 
 import SQLHelper
-import auth
-# from server import structs
 
 
-# def login(client, data):
-#
-#     user = SQLHelper.get_user_by_uuid(data[0])
-#     if user is None:
-#         SQLHelper.add_user(data[0], data[1], data[2])
-#         user = SQLHelper.get_user_by_uuid(data[0])
-#     client.user = user
-#     client.uuid = data[0]
-#     return "Logged in: " + data[0]
-
+# default seats
+# ''.join([chr(i) for i in range(100)])
 
 def reserve(client: socket, data: list[Union[str, int]]) -> str:
-    if len(data) < 7:
+    if len(data) != 7:
         return "Invalid Parameters"
     uuid_ = data[0]
-    command = data[1]
     date = data[2]
     time = data[3]
     theater = data[4]
-    seats = data[5]
+    seats = int(data[5]).to_bytes(1, 'big')
     movie_id = data[6]
     print("Reserving seats")
 
@@ -34,29 +22,42 @@ def reserve(client: socket, data: list[Union[str, int]]) -> str:
     movie = SQLHelper.get_movie_by_id(movie_id)
     theater = SQLHelper.get_theater_by_name(theater)
     movie_seats = [i for i in movie["seats"]]
-    seats = [i for i in seats]
     occupied = []
     if any(i in movie_seats for i in seats):
         return "Invalid seats"
-
+    # reserve 5 420 1 227 1
     if movie is None:
         return f"Movie with id {movie_id} not found"
 
-    if movie["rating"] == "R" or movie["rating" == "NC-17"] and user["age"] < 18:
+    if movie["rating"] == "R" or movie["rating"] == "NC-17" and user["age"] < 18:
         return "You are too young to reserve this movie"
 
+    print("before bitmask")
     bitmask = 0b01111111
-    movie_seat_positions = [i & bitmask for i in movie["seats"]]
+    # for i in movie["seats"]:
+    #     print(i)
+    #     print(type(i))
+    movie_seat_positions = [i & bitmask for i in movie_seats]
     seat_positions = [i & bitmask for i in seats]
     for i in seat_positions:
+        print(i)
         if i > 99:
             return "Invalid seats"
-        movie_seats[movie_seat_positions.index(i)] = seats[i]
+        print(len(movie_seat_positions))
+        print("length: ", len(movie_seats))
+        print("index: " + movie_seat_positions.index(i).__str__())
+        print(movie_seats[movie_seat_positions.index(i)])
+        print(seats[seat_positions.index(i)])
+        print("i: " + i.__str__())
+        movie_seats[movie_seat_positions.index(i)] = seats[seat_positions.index(i)]#.to_bytes(1, 'big')
+    print("after seat set")
     available_seats = [i for i in seats if i <= 99]
-    SQLHelper.update_movie_seats(movie_id, movie_seats)
+    tmp = []
+    print()
+    SQLHelper.update_movie_seats(movie_id, ''.join([chr(i) for i in movie_seats]))
     SQLHelper.update_movie_availability(movie_id, len(available_seats))
 
-    SQLHelper.add_reservation(uuid_, movie_id, date, time, theater, seats)
+    SQLHelper.add_reservation(uuid_, movie_id, date, time, theater["id"], data[5])
     return "Reserved"
 
 
@@ -65,7 +66,6 @@ def create(client: socket, data: list[Union[str, int]]) -> str:
     if not SQLHelper.is_admin(uuid):
         return "Permission denied"
 
-    command = data[1]
     tablename = data[2]
     columns = data[3:]
 
@@ -88,7 +88,6 @@ def execute(client: socket, data: list[Union[str, int]]) -> str:
     if len(data) < 2:
         return "Invalid Parameters"
     uuid = data[0]
-    command = data[1]
     if not SQLHelper.is_admin(uuid):
         return "Permission denied"
     SQLHelper.execute(' '.join(data[2:]))
@@ -96,20 +95,33 @@ def execute(client: socket, data: list[Union[str, int]]) -> str:
     return "Executed"
 
 
-def get_unique_movies(client: socket, data: list[Union[str, int]]) -> str:
-    if len(data) < 3:
+def get_movies_by_title(client: socket, data: list[Union[str, int]]) -> str:
+    if len(data) != 3:
         return "Invalid Parameters"
-    uuid = data[0]
-    command = data[1]
     title = data[2]
 
-    movies = SQLHelper.get_unique_movies(title)
+    movies = SQLHelper.get_movies_by_title(title)
+    movies = [i["title"] for i in movies]
+    return '::'.join(movies)
+
+
+def get_unique_movies(client: socket, data: list[Union[str, int]]) -> str:
+    if len(data) != 2:
+        return "Invalid Parameters"
+
+    movies = list(SQLHelper.get_unique_movies())
     return '::'.join(movies)
 
 
 def get_movies(client: socket, data: list[Union[str, int]]) -> str:
+    if len(data) > 2:
+        return "Invalid Parameters"
+
     def movie_to_str(__movie):
-        return f"{__movie['id']}::{__movie['title']}::{__movie['rating']}::{__movie['showtime']}::{__movie['showdate']}::{__movie['theater']}::{__movie['seats']}::{__movie['available']}::{__movie['capacity']}"
+        return (
+            f"{__movie['id']}::{__movie['title']}::{__movie['rating']}::{__movie['showtime']}::{__movie['showdate']}"
+            f"::{__movie['theater']}::{__movie['seats']}::{__movie['available']}::{__movie['capacity']}")
+
     movies = SQLHelper.get_movies()
     retval = ""
     for movie in movies:
@@ -118,8 +130,13 @@ def get_movies(client: socket, data: list[Union[str, int]]) -> str:
 
 
 def get_reservations(client: socket, data: list[Union[str, int]]) -> str:
+    if len(data) > 2:
+        return "Invalid Parameters"
+
     def reservation_to_str(__reservation):
-        return f"{__reservation['id']}::{__reservation['movie_id']}::{__reservation['date']}::{__reservation['time']}::{__reservation['theater']}::{__reservation['seats']}"
+        return (
+            f"{__reservation['id']}::{__reservation['movie_id']}::{__reservation['date']}::{__reservation['time']}"
+            f"::{__reservation['theater']}::{__reservation['seats']}")
 
     reservations = SQLHelper.get_reservations(data[0])
     retval = ""

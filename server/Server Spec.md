@@ -1,11 +1,23 @@
 # Server Spec
 
+## Initial Setup
+
+- The server is a TCP server that listens on port `31337`. All user verification is via the UUID stored with the client.
+- UUID generation is done on the server, generate your UUID with `register` and store it.
+
 ## Passing Commands
 
 - Commands will be passed in the format of `uuid::command::param1::param2::...`
 - Likewise, responses will be passed in a '::' delimited format, as outlined below
 
 ## Commands
+
+- ### register
+  - Registers the user with the server and returns the UUID to be stored with the client.
+  - Parameters: name, age
+  - Example: `register::John Smith::21`
+  - Returns `success::[uuid]`
+  - Returns `failure::[reason]`
 
 - ### reserve
   - Creates a movie reservation and adds it to the database
@@ -45,3 +57,10 @@ movie_id::title::rating::time::date::theater::seats_available::capacity
   - Parameters: movie_id
   - Example: `uuid::get_seats::1`
   - Response: `seat1_status::seat2_status::...`
+
+- ### create_movie
+  - Creates a new movie entry and adds it to the database
+  - Parameters: title, rating, date, time, theater, seats_available, capacity
+  - Example: `uuid::create_movie::"Shrek"::"PG"::20220424::1030::1::100::100`
+  - Response: `success::movie_id`
+  - Response: `failure::reason`

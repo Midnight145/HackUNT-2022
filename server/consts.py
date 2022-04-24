@@ -10,3 +10,5 @@ class Errors:
     EMPTY_RESPONSE = "failure::empty_response"
     NO_INPUT = "failure::no_input"
     CONN_CLOSED = "failure::conn_closed"
+
+SOCKET_BUFFER_SIZE = 8192

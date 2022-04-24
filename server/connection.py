@@ -3,6 +3,7 @@ from socket import socket
 
 import commands
 from consts import Errors
+import consts
 
 
 class Client:
@@ -16,7 +17,7 @@ class Client:
 
     def listen(self) -> None:
         while self.active:
-            data: bytes = self.connection.recv(1024)
+            data: bytes = self.connection.recv(consts.SOCKET_BUFFER_SIZE)
             if not data:
                 self.connection.close()
 

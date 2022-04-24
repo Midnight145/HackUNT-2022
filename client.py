@@ -18,7 +18,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
 
     while True:
         try:
-            data = sock.recv(1024)
+            data = sock.recv(8192)
 
             if not uuid_:
                 with open("uuid.dat", "w+") as f:

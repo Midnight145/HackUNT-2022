@@ -4,7 +4,7 @@ import threading
 import SQLHelper
 import connection
 
-PORT = 31338
+PORT = 31337
 HOST = "127.0.0.1"
 DB_FILE = "server.db"
 

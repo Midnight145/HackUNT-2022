@@ -2,7 +2,6 @@ import socket
 import sys
 import uuid
 
-
 with open("uuid.dat", "r") as f:
     uuid_ = f.read()
 
@@ -16,6 +15,7 @@ HOST = "127.0.0.1"
 register = False
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
     sock.connect((HOST, PORT))
+
     while True:
         try:
             data = sock.recv(1024)
@@ -30,8 +30,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             print(data.decode())
             sendval = input("Enter a message: ")
             ret = parse_command(sendval)
-            sendval = uuid_ + " " + sendval
+            sendval = uuid_ + "::" + sendval
             sock.send(sendval.encode())
         except KeyboardInterrupt:
+            print("\nExiting...")
             sock.close()
             sys.exit()

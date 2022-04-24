@@ -1,0 +1,460 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A717E9FECDD0C41DDFEE30E1 /* Pods_MovieTicketing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1C7E8454B5CA12F569AC316 /* Pods_MovieTicketing.framework */; };
+		E55FBD7B281573A60069BA5E /* FirestoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E55FBD7A281573A60069BA5E /* FirestoreManager.swift */; };
+		E58103A428156BA400A580B7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E58103A328156BA300A580B7 /* GoogleService-Info.plist */; };
+		E58ECEA52814CAA00032E906 /* MovieTicketingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58ECEA42814CAA00032E906 /* MovieTicketingApp.swift */; };
+		E58ECEA72814CAA00032E906 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58ECEA62814CAA00032E906 /* StartView.swift */; };
+		E58ECEA92814CAA50032E906 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E58ECEA82814CAA50032E906 /* Assets.xcassets */; };
+		E58ECEAC2814CAA50032E906 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E58ECEAB2814CAA50032E906 /* Preview Assets.xcassets */; };
+		E58ECEB32814CAD20032E906 /* CreatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58ECEB22814CAD20032E906 /* CreatorView.swift */; };
+		E58ECEB52814CB070032E906 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58ECEB42814CB070032E906 /* User.swift */; };
+		E58ECEB72814CB130032E906 /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58ECEB62814CB130032E906 /* Movie.swift */; };
+		E58ECEB92814CB340032E906 /* Theater.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58ECEB82814CB340032E906 /* Theater.swift */; };
+		E58ECEBB2814CB3F0032E906 /* Seat.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58ECEBA2814CB3F0032E906 /* Seat.swift */; };
+		E58ECEBF2814D8A70032E906 /* BookingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58ECEBE2814D8A70032E906 /* BookingView.swift */; };
+		E58ECEC12814F1630032E906 /* SelectMovieTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58ECEC02814F1630032E906 /* SelectMovieTimeView.swift */; };
+		E58ECEC32815092E0032E906 /* SelectSeatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E58ECEC22815092E0032E906 /* SelectSeatsView.swift */; };
+		E5D5293B2815367E0053F9F4 /* ReserveAndPayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D5293A2815367E0053F9F4 /* ReserveAndPayView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1380998F896363515F0367E8 /* Pods-MovieTicketing.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovieTicketing.debug.xcconfig"; path = "Target Support Files/Pods-MovieTicketing/Pods-MovieTicketing.debug.xcconfig"; sourceTree = "<group>"; };
+		5AF3E682A3977B5E79750DBE /* Pods-MovieTicketing.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovieTicketing.release.xcconfig"; path = "Target Support Files/Pods-MovieTicketing/Pods-MovieTicketing.release.xcconfig"; sourceTree = "<group>"; };
+		D1C7E8454B5CA12F569AC316 /* Pods_MovieTicketing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MovieTicketing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E55FBD7A281573A60069BA5E /* FirestoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreManager.swift; sourceTree = "<group>"; };
+		E58103A328156BA300A580B7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E58ECEA12814CAA00032E906 /* MovieTicketing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieTicketing.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E58ECEA42814CAA00032E906 /* MovieTicketingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieTicketingApp.swift; sourceTree = "<group>"; };
+		E58ECEA62814CAA00032E906 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
+		E58ECEA82814CAA50032E906 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E58ECEAB2814CAA50032E906 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		E58ECEB22814CAD20032E906 /* CreatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatorView.swift; sourceTree = "<group>"; };
+		E58ECEB42814CB070032E906 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		E58ECEB62814CB130032E906 /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
+		E58ECEB82814CB340032E906 /* Theater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theater.swift; sourceTree = "<group>"; };
+		E58ECEBA2814CB3F0032E906 /* Seat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Seat.swift; sourceTree = "<group>"; };
+		E58ECEBE2814D8A70032E906 /* BookingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingView.swift; sourceTree = "<group>"; };
+		E58ECEC02814F1630032E906 /* SelectMovieTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectMovieTimeView.swift; sourceTree = "<group>"; };
+		E58ECEC22815092E0032E906 /* SelectSeatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectSeatsView.swift; sourceTree = "<group>"; };
+		E5D5293A2815367E0053F9F4 /* ReserveAndPayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReserveAndPayView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E58ECE9E2814CAA00032E906 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A717E9FECDD0C41DDFEE30E1 /* Pods_MovieTicketing.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		77F3B77B2602DF8B3EDE18CE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D1C7E8454B5CA12F569AC316 /* Pods_MovieTicketing.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E58ECE982814CAA00032E906 = {
+			isa = PBXGroup;
+			children = (
+				E58ECEA32814CAA00032E906 /* MovieTicketing */,
+				E58ECEA22814CAA00032E906 /* Products */,
+				E6AC06A8CFD93866A5BCD2AE /* Pods */,
+				77F3B77B2602DF8B3EDE18CE /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		E58ECEA22814CAA00032E906 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E58ECEA12814CAA00032E906 /* MovieTicketing.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E58ECEA32814CAA00032E906 /* MovieTicketing */ = {
+			isa = PBXGroup;
+			children = (
+				E58ECEA42814CAA00032E906 /* MovieTicketingApp.swift */,
+				E58ECEB42814CB070032E906 /* User.swift */,
+				E58ECEB62814CB130032E906 /* Movie.swift */,
+				E58ECEB82814CB340032E906 /* Theater.swift */,
+				E58ECEBA2814CB3F0032E906 /* Seat.swift */,
+				E55FBD7A281573A60069BA5E /* FirestoreManager.swift */,
+				E58ECEA62814CAA00032E906 /* StartView.swift */,
+				E58ECEB22814CAD20032E906 /* CreatorView.swift */,
+				E58ECEBE2814D8A70032E906 /* BookingView.swift */,
+				E58ECEC02814F1630032E906 /* SelectMovieTimeView.swift */,
+				E58ECEC22815092E0032E906 /* SelectSeatsView.swift */,
+				E5D5293A2815367E0053F9F4 /* ReserveAndPayView.swift */,
+				E58103A328156BA300A580B7 /* GoogleService-Info.plist */,
+				E58ECEA82814CAA50032E906 /* Assets.xcassets */,
+				E58ECEAA2814CAA50032E906 /* Preview Content */,
+			);
+			path = MovieTicketing;
+			sourceTree = "<group>";
+		};
+		E58ECEAA2814CAA50032E906 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				E58ECEAB2814CAA50032E906 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		E6AC06A8CFD93866A5BCD2AE /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				1380998F896363515F0367E8 /* Pods-MovieTicketing.debug.xcconfig */,
+				5AF3E682A3977B5E79750DBE /* Pods-MovieTicketing.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E58ECEA02814CAA00032E906 /* MovieTicketing */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E58ECEAF2814CAA50032E906 /* Build configuration list for PBXNativeTarget "MovieTicketing" */;
+			buildPhases = (
+				54404F116D3813414042F613 /* [CP] Check Pods Manifest.lock */,
+				E58ECE9D2814CAA00032E906 /* Sources */,
+				E58ECE9E2814CAA00032E906 /* Frameworks */,
+				E58ECE9F2814CAA00032E906 /* Resources */,
+				9A69702233824E624E532B47 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MovieTicketing;
+			productName = MovieTicketing;
+			productReference = E58ECEA12814CAA00032E906 /* MovieTicketing.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E58ECE992814CAA00032E906 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1330;
+				LastUpgradeCheck = 1330;
+				TargetAttributes = {
+					E58ECEA02814CAA00032E906 = {
+						CreatedOnToolsVersion = 13.3.1;
+					};
+				};
+			};
+			buildConfigurationList = E58ECE9C2814CAA00032E906 /* Build configuration list for PBXProject "MovieTicketing" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E58ECE982814CAA00032E906;
+			productRefGroup = E58ECEA22814CAA00032E906 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E58ECEA02814CAA00032E906 /* MovieTicketing */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E58ECE9F2814CAA00032E906 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E58ECEAC2814CAA50032E906 /* Preview Assets.xcassets in Resources */,
+				E58ECEA92814CAA50032E906 /* Assets.xcassets in Resources */,
+				E58103A428156BA400A580B7 /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		54404F116D3813414042F613 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-MovieTicketing-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9A69702233824E624E532B47 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MovieTicketing/Pods-MovieTicketing-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MovieTicketing/Pods-MovieTicketing-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MovieTicketing/Pods-MovieTicketing-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E58ECE9D2814CAA00032E906 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E58ECEBF2814D8A70032E906 /* BookingView.swift in Sources */,
+				E58ECEB52814CB070032E906 /* User.swift in Sources */,
+				E58ECEA72814CAA00032E906 /* StartView.swift in Sources */,
+				E5D5293B2815367E0053F9F4 /* ReserveAndPayView.swift in Sources */,
+				E58ECEA52814CAA00032E906 /* MovieTicketingApp.swift in Sources */,
+				E58ECEBB2814CB3F0032E906 /* Seat.swift in Sources */,
+				E58ECEB92814CB340032E906 /* Theater.swift in Sources */,
+				E55FBD7B281573A60069BA5E /* FirestoreManager.swift in Sources */,
+				E58ECEB32814CAD20032E906 /* CreatorView.swift in Sources */,
+				E58ECEC32815092E0032E906 /* SelectSeatsView.swift in Sources */,
+				E58ECEC12814F1630032E906 /* SelectMovieTimeView.swift in Sources */,
+				E58ECEB72814CB130032E906 /* Movie.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		E58ECEAD2814CAA50032E906 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E58ECEAE2814CAA50032E906 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E58ECEB02814CAA50032E906 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1380998F896363515F0367E8 /* Pods-MovieTicketing.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"MovieTicketing/Preview Content\"";
+				DEVELOPMENT_TEAM = T74HSY8AMC;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = TEQ.MovieTicketing;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E58ECEB12814CAA50032E906 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5AF3E682A3977B5E79750DBE /* Pods-MovieTicketing.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"MovieTicketing/Preview Content\"";
+				DEVELOPMENT_TEAM = T74HSY8AMC;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = TEQ.MovieTicketing;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E58ECE9C2814CAA00032E906 /* Build configuration list for PBXProject "MovieTicketing" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E58ECEAD2814CAA50032E906 /* Debug */,
+				E58ECEAE2814CAA50032E906 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E58ECEAF2814CAA50032E906 /* Build configuration list for PBXNativeTarget "MovieTicketing" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E58ECEB02814CAA50032E906 /* Debug */,
+				E58ECEB12814CAA50032E906 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E58ECE992814CAA00032E906 /* Project object */;
+}

@@ -1,0 +1,12 @@
+use_frameworks!
+
+platform :ios, '14.0'
+
+target 'MovieTicketing' do
+# pod 'Socket.swift', '~> 2.4.0'
+# Add the Firebase pod for Google Analytics
+pod 'Firebase/Analytics'
+pod 'Firebase/Auth'
+pod 'Firebase/Firestore'
+
+end

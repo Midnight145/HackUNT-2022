@@ -1,5 +1,5 @@
 from typing import Union, TYPE_CHECKING
-
+import shlex
 import commands
 
 if TYPE_CHECKING:
@@ -11,7 +11,6 @@ class Client:
         self.connection = connection
         self.address = address
         self.uuid = None
-        self.logged_in = False
         self.active = True
         self.user = None
 
@@ -35,16 +34,22 @@ def new_client(conn, addr):
 
 
 def parse_data(client, data) -> Union['MovieReservation', 'SeatReservation', str, None]:
+    if client.uuid is None:
+        client.uuid = data.split()[0].decode("utf-8")
     data = data.decode("utf-8")
-    data = data.split(" ")
-    if data[0] == "register":
-        return commands.register(client, data)
-
-    if data[0] == "login":
-        return commands.login(client, data)
+    data = shlex.split(data)
+    if len(data) == 1:
+        return "Invalid Command"
 
     # data[0] will always be uuid after login
     if data[1] == "reserve":
         return commands.reserve(client, data)
+
+    elif data[1] == "view":
+        pass
+
+    elif data[1] == "connect":
+        return commands.connect(client, data)
+
 
     return "Invalid Command"

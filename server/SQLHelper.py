@@ -17,7 +17,7 @@ def init() -> None:
     db.execute("CREATE TABLE IF NOT EXISTS movie_reservations (id INTEGER PRIMARY KEY AUTOINCREMENT, uuid TEXT, "
                "movie_id TEXT, date TEXT, time TEXT, theater INTEGER)")
     db.execute("CREATE TABLE IF NOT EXISTS movies (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, rating TEXT, "
-               "showtime TEXT, showdate TEXT, theater INTEGER, available INTEGER, capacity INTEGER)")
+               "date TEXT, time TEXT, theater INTEGER, available INTEGER, capacity INTEGER)")
     db.execute("CREATE TABLE IF NOT EXISTS theaters (id INTEGER PRIMARY KEY AUTOINCREMENT, capacity INTEGER, "
                "available INTEGER, theater_name TEXT)")
     db.execute("CREATE TABLE IF NOT EXISTS admins (uuid TEXT PRIMARY KEY)")
@@ -56,27 +56,26 @@ def add_theater(capacity: int, available: int, theater_name: str, seats: str) ->
         connection.commit()
 
 
-# todo: fix insert into syntax
-def add_movie(title: str, rating: str, showdate: int, showtime: int, theater: str, available: int,
+def add_movie(title: str, rating: str, date: int, time: int, theater: str, available: int,
               capacity: int) -> int:
     """
     Adds a movie to the database
     :param title: the movie title
     :param rating: the movie rating
-    :param showtime: showtime
-    :param showdate: showdate
+    :param time: movie time
+    :param date: movie date
     :param theater: theater id
     :param available: available seats
     :param capacity: total seats
     :return: Created movie id
     """
     with mutex:
-        db.execute("INSERT INTO movies VALUES (?, ?, ?, ?, ?, ?)",
-                   (title, rating, showtime, showdate, theater, available, capacity))
+        db.execute("INSERT INTO movies (title, rating, date, time theater, available, capacity) VALUES (?, ?, ?, ?, ?, ?)",
+                   (title, rating, date, time, theater, available, capacity))
         connection.commit()
         # get new movie id
-        db.execute("SELECT FROM movies WHERE title = ?, rating = ?, showtime = ?, showdate = ?, theater = ?, "
-                   "available = ?, capacity = ?", (title, rating, showtime, showdate, theater, available, capacity))
+        db.execute("SELECT FROM movies WHERE title = ?, rating = ?, date = ?, time = ?, theater = ?, "
+                   "available = ?, capacity = ?", (title, rating, date, time, theater, available, capacity))
         new_movie_id = db.fetchone()["id"]
     return new_movie_id
 
@@ -251,3 +250,35 @@ def get_reservation(uuid: str, movie_id: int) -> sqlite3.Row:
     with mutex:
         resp = db.execute("SELECT * FROM movie_reservations WHERE uuid = ? AND movie_id = ?", (uuid, movie_id))
     return resp.fetchone()
+
+
+def get_dates(movie_title) -> list[str]:
+    """
+    Returns a list of all dates for the given movie, eventually gets sent to the client
+    :param movie_title: the title of the movie
+    :return: a list of all dates for the given movie
+    """
+    with mutex:
+        resp = db.execute("SELECT date FROM movies WHERE title = ?", (movie_title,))
+    return [i["date"] for i in resp.fetchall()]
+
+
+def get_times(movie_title, date) -> list[str]:
+    """
+    Returns a list of all times for the given movie, eventually gets sent to the client
+    :param movie_title: the title of the movie
+    :return: a list of all times for the given movie
+    """
+    with mutex:
+        resp = db.execute("SELECT time FROM movies WHERE title = ? AND date = ?", (movie_title, date))
+    return [i["time"] for i in resp.fetchall()]
+
+
+def get_theaters() -> list[sqlite3.Row]:
+    """
+    Returns a list of all theaters, eventually gets sent to the client
+    :return: a list of all theaters
+    """
+    with mutex:
+        resp = db.execute("SELECT * FROM theaters")
+    return resp.fetchall()

@@ -8,19 +8,19 @@ if TYPE_CHECKING:  # avoid circular import, always false
 
 
 def reserve(client: 'Client', data: list[Union[str, int]]) -> str:
-    if len(data) < 7:
+    if len(data) < 4:  # data[0] is uuid, data[1] is command, data[2] is movie_id, data[3] is seats
         return Errors.INVALID_PARAMS
     uuid_ = data[0]
-    date = data[2]
-    time = data[3]
-    theater = data[4]
-    movie_id = data[5]
-    seats = data[6:]  # all seats are this param or later
+    movie_id = data[2]
+    seats = data[3:]  # all seats are this param or later
 
     print("Reserving seats")
 
     user = SQLHelper.get_user_by_uuid(client.uuid)
     movie = SQLHelper.get_movie_by_id(movie_id)
+    date = movie['date']
+    time = movie['time']
+    theater = movie['theater']
     reserved_seats = SQLHelper.get_reserved_seats(movie_id)
 
     reserved_seat_numbers = [str(i["seat_number"]) for i in reserved_seats]
@@ -42,7 +42,7 @@ def reserve(client: 'Client', data: list[Union[str, int]]) -> str:
     if any(int(i) > 99 or int(i) < 0 for i in seats):  # seat number is out of range
         return Errors.INVALID_SEATS
 
-    SQLHelper.reserve_seats(uuid_, movie_id, data[6:])  # reserve seats
+    SQLHelper.reserve_seats(uuid_, movie_id, data[3:])  # reserve seats
 
     reserved_seats = SQLHelper.get_reserved_seats(movie_id)  # get reserved seats to get updated seat numbers
 
@@ -160,10 +160,26 @@ def get_reservations(client: 'Client', data: list[Union[str, int]]) -> str:
     return retval
 
 
-#  todo: get times
+def get_dates(client: 'Client', data: list[Union[str, int]]) -> str:
+    if len(data) != 2:  # data[0] is uuid, data[1] is command, data[2] is title
+        return Errors.INVALID_PARAMS
+
+    dates = SQLHelper.get_dates(data[2])  # get dates for movie
+    retval = ""
+    for date in dates:
+        retval += date + "::"
+    return retval
+
+
 def get_times(client: 'Client', data: list[Union[str, int]]) -> str:
     if len(data) != 3:  # data[0] is uuid, data[1] is command, data[2] is title
         return Errors.INVALID_PARAMS
+
+    times = SQLHelper.get_times(data[2])  # get times for movie
+    retval = ""
+    for time in times:
+        retval += time + "::"
+    return retval
 
 
 def get_seats(client: 'Client', data: list[Union[str, int]]) -> str:
@@ -179,4 +195,15 @@ def get_seats(client: 'Client', data: list[Union[str, int]]) -> str:
             retval += "0"  # we can assume it's available
         retval += "::"  # add delimiter
 
+    return retval
+
+
+def get_theaters(client: 'Client', data: list[Union[str, int]]) -> str:
+    theaters = SQLHelper.get_theaters()  # get all theaters
+    retval = ""  # return value
+
+    # todo: fix retval
+
+    for theater in theaters:
+        retval += theater + "::"  # add theater to return value
     return retval

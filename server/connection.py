@@ -53,7 +53,7 @@ def parse_data(client: Client, data: bytes) -> str:
         client.uuid = data.split()[0].decode("utf-8")
     data = data.decode("utf-8")
     data = shlex.split(data)
-    if len(data) == 1:
+    if len(data) < 2:
         return Errors.INVALID_COMMAND
 
     # data[0] will always be uuid after login
@@ -79,5 +79,14 @@ def parse_data(client: Client, data: bytes) -> str:
 
     elif data[1] == "create_movie":
         return commands.create_movie(client, data)
+
+    elif data[1] == "get_times":
+        return commands.get_times(client, data)
+
+    elif data[1] == "get_dates":
+        return commands.get_dates(client, data)
+
+    elif data[1] == "get_theaters":
+        return commands.get_theaters(client, data)
 
     return Errors.INVALID_COMMAND

@@ -163,7 +163,7 @@ def get_reservations(client: 'Client', data: list[Union[str, int]]) -> str:
 
 
 def get_dates(client: 'Client', data: list[Union[str, int]]) -> str:
-    if len(data) != 2:  # data[0] is uuid, data[1] is command, data[2] is title
+    if len(data) != 3:  # data[0] is uuid, data[1] is command, data[2] is title
         return Errors.INVALID_PARAMS
 
     dates = SQLHelper.get_dates(data[2])  # get dates for movie
@@ -174,10 +174,10 @@ def get_dates(client: 'Client', data: list[Union[str, int]]) -> str:
 
 
 def get_times(client: 'Client', data: list[Union[str, int]]) -> str:
-    if len(data) != 3:  # data[0] is uuid, data[1] is command, data[2] is title
+    if len(data) != 4:  # data[0] is uuid, data[1] is command, data[2] is title, data[3] is date
         return Errors.INVALID_PARAMS
 
-    times = SQLHelper.get_times(data[2])  # get times for movie
+    times = SQLHelper.get_times(data[2], data[3])  # get times for movie
     retval = ""
     for time in times:
         retval += time + "::"

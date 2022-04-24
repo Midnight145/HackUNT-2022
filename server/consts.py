@@ -6,3 +6,7 @@ class Errors:
     INVALID_SEATS = "failure::invalid_seats"
     NOT_FOUND = "failure::not_found"
     INVALID_COMMAND = "failure::invalid_command"
+    NO_RESPONSE = "failure::no_response"
+    EMPTY_RESPONSE = "failure::empty_response"
+    NO_INPUT = "failure::no_input"
+    CONN_CLOSED = "failure::conn_closed"

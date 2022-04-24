@@ -22,12 +22,18 @@ class Client:
 
             print(data.decode("utf-8"))
             resp: str = parse_data(self, data)
-            if resp is not None:
-                while resp[-1] == ":" or resp[-1] == '\n':  # remove trailing colons, newlines
-                    resp = resp[:-1]
+            if resp is None:
+                resp = Errors.NO_RESPONSE
+            elif resp == "":
+                resp = Errors.EMPTY_RESPONSE
+            while resp[-1] == ":" or resp[-1] == '\n':  # remove trailing colons, newlines
+                resp = resp[:-1]
+            try:
                 self.connection.send(str(resp).encode("utf-8"))
-            else:
-                self.connection.send(b"failure::no response")
+            except OSError:
+                self.active = False
+        self.connection.close()
+        print(f"Disconnected from {self.address}")
 
 
 def new_client(conn: socket, addr: tuple) -> None:
@@ -48,12 +54,17 @@ def parse_data(client: Client, data: bytes) -> str:
     :param data: the data received from the client
     :return: response to be sent to the client
     """
+
+    if len(data) == 0:  # if no data was received
+        client.active = False  # close the connection, client is dead
+        return Errors.CONN_CLOSED
+
     if client.uuid is None:
         client.uuid = data.split()[0].decode("utf-8")
     data = data.decode("utf-8")
     data = data.split("::")
-    if len(data) < 2:
-        return Errors.INVALID_COMMAND
+    if data[1] == "":  # if the command is empty, return an error
+        return Errors.NO_INPUT
 
     # data[0] will always be uuid after login
     # data[1] will always be the command

@@ -2,7 +2,6 @@ import socket
 import sys
 import uuid
 
-# TODO: delimiter ::
 
 with open("uuid.dat", "r") as f:
     uuid_ = f.read()

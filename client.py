@@ -31,9 +31,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                 break
             print(data.decode())
             sendval = input("Enter a message: ")
-            print(sendval)
             ret = parse_command(sendval)
-            print(uuid_)
             sendval = uuid_ + " " + sendval
             sock.send(sendval.encode())
         except KeyboardInterrupt:

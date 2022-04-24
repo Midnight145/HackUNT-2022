@@ -81,7 +81,7 @@ def add_reservation(uuid_: str, movie_id: int, date: int, time: int, theater: st
     :return: None
     """
     with mutex:
-        db.execute("INSERT INTO movie_reservations (uuid, movie_id, date, time, seats) VALUES (?, ?, ?, ?, ?)", (uuid_, movie_id, date, time, theater))
+        db.execute("INSERT INTO movie_reservations (uuid, movie_id, date, time, theater) VALUES (?, ?, ?, ?, ?)", (uuid_, movie_id, date, time, theater))
         connection.commit()
 
 
@@ -214,3 +214,13 @@ def get_reservations(uuid: str) -> list[sqlite3.Row]:
         resp = db.execute("SELECT * FROM movie_reservations WHERE uuid = ?", (uuid,))
     return resp.fetchall()
 
+
+def get_seats(movie_id: int) -> list[sqlite3.Row]:
+    """
+    Returns a list of all seats for the given movie, eventually gets sent to the client
+    :param movie_id:
+    :return: a list of all seats for the given movie
+    """
+    with mutex:
+        resp = db.execute("SELECT * FROM seats WHERE movie_id = ?", (movie_id,))
+    return resp.fetchall()

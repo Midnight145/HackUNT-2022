@@ -1,10 +1,14 @@
 from socket import socket
-from typing import Union
-from connection import Client
+from typing import Union, TYPE_CHECKING
 import SQLHelper
 
+if TYPE_CHECKING:  # avoid circular import, always false
+    from connection import Client
 
-def reserve(client: Client, data: list[Union[str, int]]) -> str:
+
+# todo: update responses to match new spec
+
+def reserve(client: 'Client', data: list[Union[str, int]]) -> str:
     if len(data) < 7:
         return "Invalid Parameters"
     uuid_ = data[0]
@@ -97,7 +101,7 @@ def get_movies(client: socket, data: list[Union[str, int]]) -> str:
     def movie_to_str(__movie):  # helper function to convert movie to string
         return (
             f"{__movie['id']}::{__movie['title']}::{__movie['rating']}::{__movie['showtime']}::{__movie['showdate']}"
-            f"::{__movie['theater']}::{__movie['seats']}::{__movie['available']}::{__movie['capacity']}")
+            f"::{__movie['theater']}::{__movie['available']}::{__movie['capacity']}")
 
     movies = SQLHelper.get_movies()  # get all movies
     retval = ""  # return value
@@ -110,13 +114,47 @@ def get_reservations(client: socket, data: list[Union[str, int]]) -> str:
     if len(data) > 2:  # data[0] is uuid, data[1] is command-- no params
         return "Invalid Parameters"
 
-    def reservation_to_str(__reservation):  # helper function to convert reservation to string
+    def reservation_to_str(__reservation, seats):  # helper function to convert reservation to string
         return (
             f"{__reservation['id']}::{__reservation['movie_id']}::{__reservation['date']}::{__reservation['time']}"
-            f"::{__reservation['theater']}::{__reservation['seats']}")
+            f"::{__reservation['theater']}::{'::'.join(seats)}")
 
     reservations = SQLHelper.get_reservations(data[0])  # get reservations for user
-    retval = ""
+
+    retval = "reservationid::movieid::date::time::theater::seats\n"  # return value
     for reservation in reservations:
-        retval += reservation_to_str(reservation) + "\n"  # add reservation to return value
+        all_seats = SQLHelper.get_reserved_seats(reservation["movie_id"])  # get reserved seats for user
+        print("Checking if seats are available")
+        print("Reserved seats:", [i["seat_number"] for i in all_seats])
+        seats = []
+        for seat in all_seats:
+            print("seat_id:", seat["movie_id"])
+            print(reservation["movie_id"] == seat["movie_id"])
+            if int(reservation["movie_id"]) == int(seat["movie_id"]):
+                print("in if")
+                seats.append(str(seat["seat_number"]))
+        print("movie_id:", reservation["movie_id"])
+        print("Seats:", seats)
+        retval += reservation_to_str(reservation, seats) + "\n"  # add reservation to return value
+    return retval
+
+
+def get_times(client: socket, data: list[Union[str, int]]) -> str:
+    if len(data) != 3:  # data[0] is uuid, data[1] is command, data[2] is title
+        return "Invalid Parameters"
+
+
+def get_seats(client: socket, data: list[Union[str, int]]) -> str:
+    if len(data) != 3:  # data[0] is uuid, data[1] is command, data[2] is movie_id
+        return "Invalid Parameters"
+
+    seats = SQLHelper.get_seats(data[2])  # get all seats for movie
+    retval = ""  # return value
+    for i in range(0, 99):  # iterate over possible seats, as all seats aren't prepopulated
+        if any(seat["seat_number"] == i for seat in seats): # if seat is reserved
+            retval += "1"  # mark seat as reserved
+        else:
+            retval += "0"  # we can assume it's available
+        retval += "::"  # add delimiter
+
     return retval

@@ -23,6 +23,8 @@ class Client:
             print(data.decode("utf-8"))
             resp: str = parse_data(self, data)
             if resp is not None:
+                while resp[-1] == ":" or resp[-1] == '\n':  # remove trailing colons, newlines
+                    resp = resp[:-1]
                 self.connection.send(str(resp).encode("utf-8"))
             else:
                 self.connection.send(b"ERROR")
@@ -70,5 +72,11 @@ def parse_data(client: Client, data: bytes) -> str:
 
     elif data[1] == "get_reservations":
         return commands.get_reservations(client, data)
+
+    elif data[1] == "get_seats":
+        return commands.get_seats(client, data)
+
+    elif data[1] == "get_movies":
+        return commands.get_movies(client, data)
 
     return "Invalid Command"

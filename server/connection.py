@@ -29,11 +29,23 @@ class Client:
 
 
 def new_client(conn: socket, addr: tuple) -> None:
+    """
+    Creates a new client and starts listening for data from the client.
+    :param conn: the connection to the client
+    :param addr: the address of the client
+    :return: None
+    """
     client = Client(conn, addr)
     client.listen()
 
 
 def parse_data(client: Client, data: bytes) -> str:
+    """
+    Parses the data received from the client and returns the response to be sent.
+    :param client: the client that sent the data
+    :param data: the data received from the client
+    :return: response to be sent to the client
+    """
     if client.uuid is None:
         client.uuid = data.split()[0].decode("utf-8")
     data = data.decode("utf-8")

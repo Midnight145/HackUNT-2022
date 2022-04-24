@@ -47,12 +47,13 @@ reservation_id::date::time::theater::movie_id::seats1::seats2::...
   - Returns a `\n`-delimited list of all movies in the database
   - Parameters: none
   - Example: `uuid::get_movies`
+  - Response: `failure::reason`
   - Response:
 ```
 movie_id::title::rating::time::date::theater::seats_available::capacity
 movie_id::title::rating::time::date::theater::seats_available::capacity
 ```
-  - Response: `failure::reason`
+ 
 
   - ### get_seats
     - Returns the reserved status of all seats in a movie, where 1 is reserved and 0 is available

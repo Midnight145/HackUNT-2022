@@ -1,6 +1,7 @@
 import sqlite3
 
 import threading
+import uuid
 
 mutex = threading.Lock()
 
@@ -26,19 +27,21 @@ def init() -> None:
     connection.commit()
 
 
-def add_user(uuid: str, name: str, age: int) -> None:
+def create_user(name: str, age: int) -> str:
     """
-    Adds a user to the database
-    :param uuid: user uuid
+    Creates a user and stores it in the database
     :param name: user's name
     :param age: user age
     :return: None
     """
+    uuid_ = str(uuid.uuid4())
     with mutex:
-        db.execute("INSERT INTO users VALUES (?, ?, ?)", (uuid, name, age))
+        db.execute("INSERT INTO users (uuid, name, age) VALUES (?, ?, ?)", (uuid_, name, age))
         connection.commit()
+    return uuid_
 
 
+# todo: fix insert into syntax
 def add_theater(capacity: int, available: int, theater_name: str, seats: str) -> None:
     """
     Adds a theater to the database
@@ -53,7 +56,9 @@ def add_theater(capacity: int, available: int, theater_name: str, seats: str) ->
         connection.commit()
 
 
-def add_movie(title: str, rating: str, showtime: int, showdate: int, theater: str, available: int, capacity: int) -> None:
+# todo: fix insert into syntax
+def add_movie(title: str, rating: str, showdate: int, showtime: int, theater: str, available: int,
+              capacity: int) -> int:
     """
     Adds a movie to the database
     :param title: the movie title
@@ -63,11 +68,17 @@ def add_movie(title: str, rating: str, showtime: int, showdate: int, theater: st
     :param theater: theater id
     :param available: available seats
     :param capacity: total seats
-    :return:
+    :return: Created movie id
     """
     with mutex:
-        db.execute("INSERT INTO movies VALUES (?, ?, ?, ?, ?, ?)", (title, rating, showtime, showdate, theater, available, capacity))
+        db.execute("INSERT INTO movies VALUES (?, ?, ?, ?, ?, ?)",
+                   (title, rating, showtime, showdate, theater, available, capacity))
         connection.commit()
+        # get new movie id
+        db.execute("SELECT FROM movies WHERE title = ?, rating = ?, showtime = ?, showdate = ?, theater = ?, "
+                   "available = ?, capacity = ?", (title, rating, showtime, showdate, theater, available, capacity))
+        new_movie_id = db.fetchone()["id"]
+    return new_movie_id
 
 
 def add_reservation(uuid_: str, movie_id: int, date: int, time: int, theater: str) -> None:
@@ -81,7 +92,8 @@ def add_reservation(uuid_: str, movie_id: int, date: int, time: int, theater: st
     :return: None
     """
     with mutex:
-        db.execute("INSERT INTO movie_reservations (uuid, movie_id, date, time, theater) VALUES (?, ?, ?, ?, ?)", (uuid_, movie_id, date, time, theater))
+        db.execute("INSERT INTO movie_reservations (uuid, movie_id, date, time, theater) VALUES (?, ?, ?, ?, ?)",
+                   (uuid_, movie_id, date, time, theater))
         connection.commit()
 
 
@@ -151,10 +163,13 @@ def reserve_seats(uuid_: str, movie_id: int, seats: list[int]) -> None:
     """
     with mutex:
         for i in seats:
-            if db.execute("SELECT * FROM seats WHERE movie_id = ? AND seat_number = ?", (movie_id, i)).fetchone() is None:
-                db.execute("INSERT INTO seats (user, reserved, movie_id, seat_number) VALUES (?, ?, ?, ?)", (uuid_, 1, movie_id, i))
+            if db.execute("SELECT * FROM seats WHERE movie_id = ? AND seat_number = ?",
+                          (movie_id, i)).fetchone() is None:
+                db.execute("INSERT INTO seats (user, reserved, movie_id, seat_number) VALUES (?, ?, ?, ?)",
+                           (uuid_, 1, movie_id, i))
             else:
-                db.execute("UPDATE seats SET reserved = 1, user = ? WHERE movie_id = ? AND seat_number = ?", (uuid_, movie_id, i))
+                db.execute("UPDATE seats SET reserved = 1, user = ? WHERE movie_id = ? AND seat_number = ?",
+                           (uuid_, movie_id, i))
 
 
 def is_admin(uuid: str) -> bool:

@@ -12,16 +12,16 @@ db: sqlite3.Cursor = connection.cursor()
 
 
 def init() -> None:
-    db.execute("CREATE TABLE IF NOT EXISTS logins (uuid TEXT PRIMARY KEY, username TEXT, password TEXT, salt TEXT)")
-    # todo: populate this table
     db.execute("CREATE TABLE IF NOT EXISTS users (uuid TEXT PRIMARY KEY, name TEXT, age INTEGER)")
     db.execute("CREATE TABLE IF NOT EXISTS movie_reservations (id INTEGER PRIMARY KEY AUTOINCREMENT, uuid TEXT, "
-               "movie_id TEXT, date TEXT, time TEXT, theater INTEGER, seats INTEGER)")
+               "movie_id TEXT, date TEXT, time TEXT, theater INTEGER)")
     db.execute("CREATE TABLE IF NOT EXISTS movies (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, rating TEXT, "
-               "showtime TEXT, showdate TEXT, theater INTEGER, seats BLOB, availabie INTEGER, capacity INTEGER)")
+               "showtime TEXT, showdate TEXT, theater INTEGER, available INTEGER, capacity INTEGER)")
     db.execute("CREATE TABLE IF NOT EXISTS theaters (id INTEGER PRIMARY KEY AUTOINCREMENT, capacity INTEGER, "
-               "available INTEGER, theater_name TEXT, seats BLOB)")
+               "available INTEGER, theater_name TEXT)")
     db.execute("CREATE TABLE IF NOT EXISTS admins (uuid TEXT PRIMARY KEY)")
+    db.execute("CREATE TABLE IF NOT EXISTS seats (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, reserved INTEGER, "
+               "movie_id INTEGER, seat_number INTEGER)")
 
     connection.commit()
 
@@ -38,50 +38,27 @@ def add_theater(capacity: int, available: int, theater_name: str, seats: str) ->
         connection.commit()
 
 
-# todo: update this to use updated table
 def add_movie(title: str, rating: str, showtime: int, showdate: int, theater: str, available: int, capacity: int) -> None:
     with mutex:
-        # ugly constant is empty seats
-
-        db.execute("INSERT INTO movies VALUES (?, ?, ?, ?, ?, ?)", (title, rating, showtime, showdate, theater, str(chr(0)) * 100))
-        connection.commit()
-
-
-def add_admin(uuid: str) -> None:
-    with mutex:
-        db.execute("INSERT INTO admins VALUES (?)", (uuid,))
+        db.execute("INSERT INTO movies VALUES (?, ?, ?, ?, ?, ?)", (title, rating, showtime, showdate, theater, available, capacity))
         connection.commit()
 
 
 def get_user_by_uuid(uuid: str) -> sqlite3.Row:
-    resp = db.execute("SELECT * FROM users WHERE uuid = ?", (uuid,))
+    with mutex:
+        resp = db.execute("SELECT * FROM users WHERE uuid = ?", (uuid,))
     return resp.fetchone()
 
 
-def get_user_by_name(username: str) -> sqlite3.Row:
+def add_reservation(uuid_: str, movie_id: int, date: int, time: int, theater: str) -> None:
     with mutex:
-        print(username)
-        resp = db.execute("SELECT * FROM users").fetchall()
-        print("len:",len(resp))
-        resp = db.execute("SELECT * FROM users WHERE name like ?", (username,))
-    return resp.fetchone()
-
-
-def add_reservation(uuid_: str, movie_id: int, date: int, time: int, theater: str, seats: str) -> None:
-    with mutex:
-        db.execute("INSERT INTO movie_reservations VALUES (?, ?, ?, ?, ?, ?)", (uuid_, movie_id, date, time, theater, seats))
+        db.execute("INSERT INTO movie_reservations (uuid, movie_id, date, time, seats) VALUES (?, ?, ?, ?, ?)", (uuid_, movie_id, date, time, theater))
         connection.commit()
 
 
 def get_movie_by_id(movie_id: str) -> sqlite3.Row:
     with mutex:
         resp = db.execute("SELECT * FROM movies WHERE id = ?", (movie_id,))
-    return resp.fetchone()
-
-
-def get_theater_by_name(theater_name: str) -> sqlite3.Row:
-    with mutex:
-        resp = db.execute("SELECT * FROM theaters WHERE theater_name = ?", (theater_name,))
     return resp.fetchone()
 
 
@@ -95,12 +72,6 @@ def is_admin(uuid: str) -> bool:
     with mutex:
         resp = db.execute("SELECT * FROM admins WHERE uuid = ?", (uuid,))
     return resp.fetchone() is not None
-
-
-def execute(query: str) -> None:
-    with mutex:
-        db.execute(query)
-        connection.commit()
 
 
 def update_movie_availability(movie_id: int, available: int) -> None:
@@ -134,3 +105,24 @@ def get_reservations(uuid: str) -> list[sqlite3.Row]:
     with mutex:
         resp = db.execute("SELECT * FROM movie_reservations WHERE uuid = ?", (uuid,))
     return resp.fetchall()
+
+
+def get_movie_seats(movie_id: int) -> list[sqlite3.Row]:
+    with mutex:
+        resp = db.execute("SELECT * FROM seats WHERE movie_id = ?", (movie_id,))
+    return resp.fetchall()
+
+
+def get_reserved_seats(movie_id: int) -> list[sqlite3.Row]:
+    with mutex:
+        resp = db.execute("SELECT * FROM seats WHERE movie_id = ? AND reserved = 1", (movie_id,))
+    return resp.fetchall()
+
+
+def reserve_seats(uuid_: str, movie_id: int, seats: list[int]) -> None:
+    with mutex:
+        for i in seats:
+            if db.execute("SELECT * FROM seats WHERE movie_id = ? AND seat_number = ?", (movie_id, i)).fetchone() is None:
+                db.execute("INSERT INTO seats (user, reserved, movie_id, seat_number) VALUES (?, ?, ?, ?)", (uuid_, 1, movie_id, i))
+            else:
+                db.execute("UPDATE seats SET reserved = 1, user = ? WHERE movie_id = ? AND seat_number = ?", (uuid_, movie_id, i))

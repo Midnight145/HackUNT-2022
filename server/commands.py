@@ -8,56 +8,45 @@ import SQLHelper
 # ''.join([chr(i) for i in range(100)])
 
 def reserve(client: socket, data: list[Union[str, int]]) -> str:
-    if len(data) != 7:
+    if len(data) < 7:
         return "Invalid Parameters"
     uuid_ = data[0]
     date = data[2]
     time = data[3]
     theater = data[4]
-    seats = int(data[5]).to_bytes(1, 'big')
-    movie_id = data[6]
+    movie_id = data[5]
+    seats = data[6:]
     print("Reserving seats")
 
     user = SQLHelper.get_user_by_uuid(client.uuid)
     movie = SQLHelper.get_movie_by_id(movie_id)
-    theater = SQLHelper.get_theater_by_name(theater)
-    movie_seats = [i for i in movie["seats"]]
-    occupied = []
-    if any(i in movie_seats for i in seats):
-        return "Invalid seats"
-    # reserve 5 420 1 227 1
+    registered_seats = SQLHelper.get_movie_seats(movie_id)
+    reserved_seats = SQLHelper.get_reserved_seats(movie_id)
+    reserved_seat_numbers = [i["seat_number"] for i in reserved_seats]
+
     if movie is None:
         return f"Movie with id {movie_id} not found"
+
+    if any(i in reserved_seat_numbers for i in seats):
+        return "Seat already reserved"
 
     if movie["rating"] == "R" or movie["rating"] == "NC-17" and user["age"] < 18:
         return "You are too young to reserve this movie"
 
-    print("before bitmask")
-    bitmask = 0b01111111
-    # for i in movie["seats"]:
-    #     print(i)
-    #     print(type(i))
-    movie_seat_positions = [i & bitmask for i in movie_seats]
-    seat_positions = [i & bitmask for i in seats]
-    for i in seat_positions:
-        print(i)
-        if i > 99:
-            return "Invalid seats"
-        print(len(movie_seat_positions))
-        print("length: ", len(movie_seats))
-        print("index: " + movie_seat_positions.index(i).__str__())
-        print(movie_seats[movie_seat_positions.index(i)])
-        print(seats[seat_positions.index(i)])
-        print("i: " + i.__str__())
-        movie_seats[movie_seat_positions.index(i)] = seats[seat_positions.index(i)]#.to_bytes(1, 'big')
-    print("after seat set")
-    available_seats = [i for i in seats if i <= 99]
-    tmp = []
-    print()
-    SQLHelper.update_movie_seats(movie_id, ''.join([chr(i) for i in movie_seats]))
-    SQLHelper.update_movie_availability(movie_id, len(available_seats))
+    if len(seats) != len(set(seats)):
+        return "Duplicate seats"
 
-    SQLHelper.add_reservation(uuid_, movie_id, date, time, theater["id"], data[5])
+    if any(int(i) > 99 or int(i) < 0 for i in seats):
+        return "Invalid seat number"
+
+    SQLHelper.reserve_seats(uuid_, movie_id, data[6:])
+
+    reserved_seats = SQLHelper.get_reserved_seats(movie_id)
+
+    SQLHelper.update_movie_availability(movie_id, 100 - len(reserved_seats))
+
+    SQLHelper.add_reservation(uuid_, movie_id, date, time, theater)
+
     return "Reserved"
 
 

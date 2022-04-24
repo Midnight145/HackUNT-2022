@@ -5,7 +5,7 @@ import uuid
 
 # TODO: delimiter ::
 
-with open("uuid.dat", "w+") as f:
+with open("uuid.dat", "r") as f:
     uuid_ = f.read()
 
 
@@ -21,21 +21,18 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
     while True:
         try:
             data = sock.recv(1024)
-            # if register and not uuid_:
+
             if not uuid_:
                 with open("uuid.dat", "w+") as f:
                     uuid_ = str(uuid.uuid4())
                     f.write(str(uuid_))
-                # register = False
+                register = False
             if not data:
                 break
             print(data.decode())
             sendval = input("Enter a message: ")
             print(sendval)
             ret = parse_command(sendval)
-            # if ret[0] == "register":
-            #     register = True
-            # else:
             print(uuid_)
             sendval = uuid_ + " " + sendval
             sock.send(sendval.encode())

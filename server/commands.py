@@ -1,4 +1,3 @@
-from socket import socket
 from typing import Union, TYPE_CHECKING
 import SQLHelper
 from consts import Errors
@@ -51,25 +50,24 @@ def reserve(client: 'Client', data: list[Union[str, int]]) -> str:
     SQLHelper.update_movie_availability(movie_id, theater["capacity"] - len(
         reserved_seats))  # update movie availability-- subtract reserved seats from total seats
 
-    SQLHelper.add_reservation(uuid_, movie_id, date, time, theater)  # add reservation
+    SQLHelper.add_reservation(uuid_, movie_id, date, time, theater["id"])  # add reservation
     reservation_id = SQLHelper.get_reservation(uuid_, movie_id)["id"]  # get reservation to get id
 
     return f"success::{reservation_id}"
 
 
-def create_movie(client: 'Client', data: list[Union[str, int]]) -> str:
+def create(client: 'Client', data: list[Union[str, int]]) -> str:
     uuid = data[0]
-    command = data[1]
     title = data[2]
     rating = data[3]
     date = data[4]
     time = data[5]
-    theater = data[6]
-    seats_available = data[7]
-    capacity = data[8]
+    theater_id = data[6]
     if not SQLHelper.is_admin(uuid):
         return Errors.PERMISSION_DENIED
-    movie_id = SQLHelper.add_movie(title, rating, date, time, theater, seats_available, capacity)
+    theater = SQLHelper.get_theater_by_id(theater_id)
+
+    movie_id = SQLHelper.add_movie(title, rating, date, time, theater_id, theater["capacity"], theater["capacity"])
 
     return f"success::{movie_id}"
 
@@ -79,7 +77,6 @@ def create_movie(client: 'Client', data: list[Union[str, int]]) -> str:
 def register(client: 'Client', data: list[Union[str, int]]) -> str:
     if len(data) != 3:
         return Errors.INVALID_PARAMS
-    command = data[0]
     name = data[1]
     age = data[2]
 
@@ -137,10 +134,10 @@ def get_reservations(client: 'Client', data: list[Union[str, int]]) -> str:
     if len(data) > 2:  # data[0] is uuid, data[1] is command-- no params
         return Errors.INVALID_PARAMS
 
-    def reservation_to_str(__reservation, seats):  # helper function to convert reservation to string
+    def reservation_to_str(reservation_, seats_):  # helper function to convert reservation to string
         return (
-            f"{__reservation['id']}::{__reservation['movie_id']}::{__reservation['date']}::{__reservation['time']}"
-            f"::{__reservation['theater']}::{'::'.join(seats)}")
+            f"{reservation_['id']}::{reservation_['movie_id']}::{reservation_['date']}::{reservation_['time']}"
+            f"::{reservation_['theater']}::{'::'.join(seats_)}")
 
     reservations = SQLHelper.get_reservations(data[0])  # get reservations for user
 
@@ -191,7 +188,7 @@ def get_seats(client: 'Client', data: list[Union[str, int]]) -> str:
     seats = SQLHelper.get_seats(data[2])  # get all seats for movie
     retval = ""  # return value
     for i in range(0, 99):  # iterate over possible seats, as all seats aren't prepopulated
-        if any(seat["seat_number"] == i for seat in seats): # if seat is reserved
+        if any(seat["seat_number"] == i for seat in seats):  # if seat is reserved
             retval += "1"  # mark seat as reserved
         else:
             retval += "0"  # we can assume it's available
@@ -202,12 +199,13 @@ def get_seats(client: 'Client', data: list[Union[str, int]]) -> str:
 
 def get_theaters(client: 'Client', data: list[Union[str, int]]) -> str:
 
-    def theater_to_string(theater):
-        return f"{theater['id']}::{theater['theater_name']}:{theater['capacity']}"
+    def theater_to_string(theater_):
+        return f"{theater_['id']}::{theater_['theater_name']}:{theater_['capacity']}"
     theaters = SQLHelper.get_theaters()  # get all theaters
     retval = ""  # return value
 
-    # todo: fix retval
+    if len(data) != 2:
+        return Errors.INVALID_PARAMS
 
     for theater in theaters:
         retval += theater_to_string(theater) + "\n"  # add theater to return value

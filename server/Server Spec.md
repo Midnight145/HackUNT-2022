@@ -61,10 +61,10 @@ movie_id::title::rating::time::date::theater::seats_available::capacity
     - Example: `uuid::get_seats::1`
     - Response: `seat1_status::seat2_status::...`
 
-  - ### create_movie
+  - ### create
     - Creates a new movie entry and adds it to the database
-    - Parameters: title, rating, date, time, theater, seats_available, capacity
-    - Example: `uuid::create_movie::"Shrek"::"PG"::20220424::1030::1::100::100`
+    - Parameters: title, rating, date, time, theater
+    - Example: `uuid::create_movie::"Shrek"::"PG"::20220424::1030::1`
     - Response: `success::movie_id`
     - Response: `failure::reason`
 

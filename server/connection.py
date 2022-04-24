@@ -67,11 +67,11 @@ def parse_data(client: Client, data: bytes) -> str:
     if data[1] == "":  # if the command is empty, return an error
         return Errors.NO_INPUT
 
-    # data[0] will always be uuid after login
-    # data[1] will always be the command
-
-    if data[1] == "register":
+    if data[0] == "register":
         return commands.register(client, data)
+
+    # data[0] will always be uuid after registration
+    # data[1] will always be the command
 
     elif data[1] == "reserve":
         return commands.reserve(client, data)
@@ -99,5 +99,9 @@ def parse_data(client: Client, data: bytes) -> str:
 
     elif data[1] == "get_theaters":
         return commands.get_theaters(client, data)
+
+    elif data[1] == "create_movie":
+        return commands.create_movie(client, data)
+
 
     return Errors.INVALID_COMMAND

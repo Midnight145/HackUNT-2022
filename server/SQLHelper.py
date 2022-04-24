@@ -78,7 +78,7 @@ def add_movie(title: str, rating: str, date: int, time: int, theater: str, avail
     return new_movie_id
 
 
-def add_reservation(uuid_: str, movie_id: int, date: int, time: int, theater: str) -> None:
+def add_reservation(uuid_: str, movie_id: int, date: int, time: int, theater: int) -> None:
     """
     Adds a reservation to the database
     :param uuid_: user uuid

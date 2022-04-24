@@ -20,7 +20,7 @@ def reserve(client: 'Client', data: list[Union[str, int]]) -> str:
     movie = SQLHelper.get_movie_by_id(movie_id)
     date = movie['date']
     time = movie['time']
-    theater = movie['theater']
+    theater_id = movie['theater']
     reserved_seats = SQLHelper.get_reserved_seats(movie_id)
 
     reserved_seat_numbers = [str(i["seat_number"]) for i in reserved_seats]
@@ -39,14 +39,16 @@ def reserve(client: 'Client', data: list[Union[str, int]]) -> str:
     if len(seats) != len(set(seats)):  # duplicate seats
         return Errors.DUP_SEATS
 
-    if any(int(i) > 99 or int(i) < 0 for i in seats):  # seat number is out of range
+    theater = SQLHelper.get_theater_by_id(theater_id)
+
+    if any(int(i) > theater["capacity"] - 1 or int(i) < 0 for i in seats):  # seat number is out of range
         return Errors.INVALID_SEATS
 
     SQLHelper.reserve_seats(uuid_, movie_id, data[3:])  # reserve seats
 
     reserved_seats = SQLHelper.get_reserved_seats(movie_id)  # get reserved seats to get updated seat numbers
 
-    SQLHelper.update_movie_availability(movie_id, 100 - len(
+    SQLHelper.update_movie_availability(movie_id, theater["capacity"] - len(
         reserved_seats))  # update movie availability-- subtract reserved seats from total seats
 
     SQLHelper.add_reservation(uuid_, movie_id, date, time, theater)  # add reservation
@@ -199,11 +201,14 @@ def get_seats(client: 'Client', data: list[Union[str, int]]) -> str:
 
 
 def get_theaters(client: 'Client', data: list[Union[str, int]]) -> str:
+
+    def theater_to_string(theater):
+        return f"{theater['id']}::{theater['theater_name']}:{theater['capacity']}"
     theaters = SQLHelper.get_theaters()  # get all theaters
     retval = ""  # return value
 
     # todo: fix retval
 
     for theater in theaters:
-        retval += theater + "::"  # add theater to return value
+        retval += theater_to_string(theater) + "\n"  # add theater to return value
     return retval

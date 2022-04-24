@@ -19,7 +19,7 @@ def init() -> None:
     db.execute("CREATE TABLE IF NOT EXISTS movies (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, rating TEXT, "
                "date TEXT, time TEXT, theater INTEGER, available INTEGER, capacity INTEGER)")
     db.execute("CREATE TABLE IF NOT EXISTS theaters (id INTEGER PRIMARY KEY AUTOINCREMENT, capacity INTEGER, "
-               "available INTEGER, theater_name TEXT)")
+               "theater_name TEXT)")
     db.execute("CREATE TABLE IF NOT EXISTS admins (uuid TEXT PRIMARY KEY)")
     db.execute("CREATE TABLE IF NOT EXISTS seats (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, reserved INTEGER, "
                "movie_id INTEGER, seat_number INTEGER)")
@@ -41,17 +41,16 @@ def create_user(name: str, age: int) -> str:
     return uuid_
 
 
-def add_theater(capacity: int, available: int, theater_name: str, seats: str) -> None:
+def add_theater(capacity: int, theater_name: str, seats: str) -> None:
     """
     Adds a theater to the database
     :param capacity: total seats
-    :param available: available seats
     :param theater_name: theater name
     :param seats: current seats
     :return: None
     """
     with mutex:
-        db.execute("INSERT INTO theaters (capacity, available, theater_name, seats) VALUES (?, ?, ?, ?)", (capacity, available, theater_name, seats))
+        db.execute("INSERT INTO theaters (capacity, theater_name, seats) VALUES (?, ?, ?)", (capacity, theater_name, seats))
         connection.commit()
 
 
@@ -281,3 +280,14 @@ def get_theaters() -> list[sqlite3.Row]:
     with mutex:
         resp = db.execute("SELECT * FROM theaters")
     return resp.fetchall()
+
+
+def get_theater_by_id(theater_id: int) -> sqlite3.Row:
+    """
+    Returns the theater with the given id
+    :param theater_id:
+    :return: the theater with the given id
+    """
+    with mutex:
+        resp = db.execute("SELECT * FROM theaters WHERE id = ?", (theater_id,))
+    return resp.fetchone()
